@@ -4,10 +4,12 @@ from sql_parser import extract_tables
 from schema_pruner import prune_schema
 from migration_task import MigrationTask
 from llm_translator import LLMTranslator
+from sql_validator import SQLValidator
 
+PROJECT_ROOT = Path(__file__).resolve().parent[2]
 
-query_path = Path("fixtures/legacy/customer_report.sql")
-schema_path = Path("fixtures/schema/legacy_schema.sql")
+query_path = PROJECT_ROOT / "fixtures" / "legacy" / "customer_report.sql"
+schema_path = PROJECT_ROOT / "fixtures" / "schema" / "legacy_schema.sql"
 
 sql = query_path.read_text()
 schema_sql = schema_path.read_text()
@@ -40,3 +42,14 @@ translated_sql = translator.translate(task)
 
 print("\nTranslated PostgreSQL SQL:")
 print(translated_sql)
+
+validator = SQLValidator()
+result = validator.validate(translated_sql)
+
+print("\nValidation Result")
+print("=" * 50)
+print(f"Success: {result.success}")
+
+if not result.success:
+    print(f"Error type: {result.error_type}")
+    print(f"Error message: {result.error_message}")
