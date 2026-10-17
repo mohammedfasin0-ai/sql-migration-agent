@@ -1,3 +1,7 @@
 .env
 __pycache__/
 venv/
+compose.yaml
+connection_test.py
+test_schema_provision.py
+test_schema_repair.py
